@@ -5,6 +5,7 @@
 "use strict";
 
 const FRAME_SCRIPT = "chrome://marionette/content/marionette-listener.js";
+dump("WTFS MAN!\n\n")
 
 // import logger
 Cu.import("resource://gre/modules/Log.jsm");
@@ -136,7 +137,9 @@ function MarionetteServerConnection(aPrefix, aTransport, aServer)
   this.mainFrame = null; //topmost chrome frame
   this.curFrame = null; // chrome iframe that currently has focus
   this.mainContentFrameId = null;
+  logger.debug("Get temp dir for chrome scripts");
   this.importedScripts = FileUtils.getFile('TmpD', ['marionetteChromeScripts']);
+  logger.debug("Get temp dir for chrome scripts done");
   this.importedScriptHashes = {"chrome" : [], "content": []};
   this.currentFrameElement = null;
   this.testName = null;
@@ -485,10 +488,12 @@ MarionetteServerConnection.prototype = {
     * Given a file name, this will delete the file from the temp directory if it exists
     */
   deleteFile: function(filename) {
+    logger.debug("Delete filename " + filename);
     let file = FileUtils.getFile('TmpD', [filename.toString()]);
     if (file.exists()) {
       file.remove(true);
     }
+    logger.debug("Delete filename " + filename + " done");
   },
 
   /**
@@ -2331,19 +2336,24 @@ MarionetteServerConnection.prototype = {
     if (this.context == "chrome") {
       let file;
       if (this.importedScripts.exists()) {
+        logger.debug("Import script file " + this.importedScripts);
         file = FileUtils.openFileOutputStream(this.importedScripts,
             FileUtils.MODE_APPEND | FileUtils.MODE_WRONLY);
+        logger.debug("Import script file " + this.importedScripts + " done");
       }
       else {
+        logger.debug("Create imported scripts");
         //Note: The permission bits here don't actually get set (bug 804563)
         this.importedScripts.createUnique(
             Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0666", 8));
         file = FileUtils.openFileOutputStream(this.importedScripts,
             FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE);
         this.importedScripts.permissions = parseInt("0666", 8); //actually set permissions
+        logger.debug("Create imported scripts done");
       }
       file.write(aRequest.parameters.script, aRequest.parameters.script.length);
       file.close();
+      logger.debug("Done importing scripts and writing files");
       this.sendOk(command_id);
     }
     else {
@@ -2941,6 +2951,7 @@ MarionetteServer.prototype = {
   onSocketAccepted: function(serverSocket, clientSocket)
   {
     logger.debug("accepted connection on " + clientSocket.host + ":" + clientSocket.port);
+    logger.debug("I HAZ WIN");
 
     let input = clientSocket.openInputStream(0, 0, 0);
     let output = clientSocket.openOutputStream(0, 0, 0);

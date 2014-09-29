@@ -79,6 +79,7 @@ let mouseEventsOnly = false;
 Cu.import("resource://gre/modules/Log.jsm");
 let logger = Log.repository.getLogger("Marionette");
 logger.info("loaded marionette-listener.js");
+logger.debug("I AM KING OF THE FOO");
 let modalHandler = function() {
   // This gets called on the system app only since it receives the mozbrowserprompt event
   sendSyncMessage("Marionette:switchedToFrame", { frameValue: null, storePrevious: true });
@@ -90,6 +91,16 @@ let modalHandler = function() {
   sandbox = null;
 };
 
+function syncRetry(retries, fn) {
+  if (retries === 0) throw new Error('Ran out of retires you die now');
+  try {
+    return fn();
+  } catch (e) {
+    logger.info("Error during operation retrying: " + e.toString());
+    syncRetry(retires - 1);
+  }
+}
+
 /**
  * Called when listener is first started up.
  * The listener sends its unique window ID and its current URI to the actor.
@@ -98,7 +109,10 @@ let modalHandler = function() {
 function registerSelf() {
   let msg = {value: winUtil.outerWindowID, href: content.location.href};
   // register will have the ID and a boolean describing if this is the main process or not
-  let register = sendSyncMessage("Marionette:register", msg);
+  logger.info("what is msg - " + typeof msg + " - " + JSON.stringify(msg));
+  let register = syncRetry(10, function() {
+    return sendSyncMessage("Marionette:register", msg);
+  });
 
   if (register[0]) {
     listenerId = register[0][0].id;
@@ -106,7 +120,9 @@ function registerSelf() {
     if (register[0][1] == true) {
       addMessageListener("MarionetteMainListener:emitTouchEvent", emitTouchEventForIFrame);
     }
+    logger.debug("Get temp dir");
     importedScripts = FileUtils.getDir('TmpD', [], false);
+    logger.debug("Get temp dir done");
     importedScripts.append('marionetteContentScripts');
     startListeners();
   }
@@ -1968,6 +1984,7 @@ function emulatorCmdResult(msg) {
 function importScript(msg) {
   let command_id = msg.json.command_id;
   let file;
+  logger.debug("Import scripts");
   if (importedScripts.exists()) {
     file = FileUtils.openFileOutputStream(importedScripts,
         FileUtils.MODE_APPEND | FileUtils.MODE_WRONLY);
@@ -1982,6 +1999,7 @@ function importScript(msg) {
   }
   file.write(msg.json.script, msg.json.script.length);
   file.close();
+  logger.debug("Import scripts done");
   sendOk(command_id);
 }
 

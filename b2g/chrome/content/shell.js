@@ -209,10 +209,12 @@ var shell = {
         return homeSrc;
     } catch (e) {}
 
+    dump("HOME URL\n");
     return Services.prefs.getCharPref('b2g.system_startup_url');
   },
 
   get manifestURL() {
+    dump("MANIFEST URL\n");
     return Services.prefs.getCharPref('b2g.system_manifest_url');
   },
 
