@@ -2933,7 +2933,7 @@ this.MarionetteServer = function MarionetteServer(port, forceLocal) {
   logger.info("Listening on port " + socket.port + "\n");
   socket.asyncListen(this);
   this.listener = socket;
-  this.nextConnId = 0;
+  this.nextConnID = 0;
   this.connections = {};
 };
 
