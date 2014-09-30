@@ -551,9 +551,11 @@ MarionetteServerConnection.prototype = {
     }
 
     if (!Services.prefs.getBoolPref("marionette.contentListener")) {
+      logger.info("Wait for window in parent...");
       waitForWindow.call(this);
     }
     else if ((appName != "Firefox") && (this.curBrowser == null)) {
+      logger.info("Waiting for b2g startup...");
       // If there is a content listener, then we just wake it up
       this.addBrowser(this.getCurrentWindow());
       this.curBrowser.startSession(false, this.getCurrentWindow(),
@@ -2793,7 +2795,9 @@ MarionetteServerConnection.prototype.requestTypes = {
 function BrowserObj(win, server) {
   this.DESKTOP = "desktop";
   this.B2G = "B2G";
+  logger.debug("Safe error begin");
   this.browser;
+  logger.debug("Safe error end");
   this.tab = null; //Holds a reference to the created tab, if any
   this.window = win;
   this.knownFrames = [];
@@ -2845,6 +2849,7 @@ BrowserObj.prototype = {
    */
   startSession: function BO_startSession(newTab, win, callback) {
     if (appName != "Firefox") {
+      logger.info("Start session in b2g...");
       callback(win, newTab);
     }
     else if (newTab) {

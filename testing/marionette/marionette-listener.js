@@ -81,6 +81,7 @@ let logger = Log.repository.getLogger("Marionette");
 logger.info("loaded marionette-listener.js");
 logger.debug("I AM KING OF THE FOO");
 let modalHandler = function() {
+  logger.info("Handling modal interaction in b2g...");
   // This gets called on the system app only since it receives the mozbrowserprompt event
   sendSyncMessage("Marionette:switchedToFrame", { frameValue: null, storePrevious: true });
   let isLocal = sendSyncMessage("MarionetteFrame:handleModal", {})[0].value;
@@ -202,18 +203,24 @@ function startListeners() {
   addMessageListenerId("Marionette:getCookies", getCookies);
   addMessageListenerId("Marionette:deleteAllCookies", deleteAllCookies);
   addMessageListenerId("Marionette:deleteCookie", deleteCookie);
+
+  logger.info("Started listeners....");
 }
 
 /**
  * Used during newSession and restart, called to set up the modal dialog listener in b2g
  */
 function waitForReady() {
+  let state = content.document.readyState;
+  logger.debug("Waiting for the parent process to be ready... : " + state);
   if (content.document.readyState == 'complete') {
+    logger.debug("Initializing timer for wait...");
     readyStateTimer.cancel();
     content.addEventListener("mozbrowsershowmodalprompt", modalHandler, false);
     content.addEventListener("unload", waitForReady, false);
   }
   else {
+    logger.debug("Begin waiting for document.readyState === complete");
     readyStateTimer.initWithCallback(waitForReady, 100, Ci.nsITimer.TYPE_ONE_SHOT);
   }
 }
@@ -250,11 +257,16 @@ function sleepSession(msg) {
  * Restarts all our listeners after this listener was put to sleep
  */
 function restart(msg) {
-  removeMessageListener("Marionette:restart", restart);
-  if (isB2G) {
-    readyStateTimer.initWithCallback(waitForReady, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+  logger.info("handling restart...");
+  try {
+    removeMessageListener("Marionette:restart", restart);
+    if (isB2G) {
+      readyStateTimer.initWithCallback(waitForReady, 100, Ci.nsITimer.TYPE_ONE_SHOT);
+    }
+    registerSelf();
+  } catch (e) {
+    logger.error("Error while trying to start session : " + e.toString());
   }
-  registerSelf();
 }
 
 /**
