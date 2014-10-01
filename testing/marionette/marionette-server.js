@@ -2798,9 +2798,7 @@ MarionetteServerConnection.prototype.requestTypes = {
 function BrowserObj(win, server) {
   this.DESKTOP = "desktop";
   this.B2G = "B2G";
-  logger.debug("Safe error begin");
-  this.browser;
-  logger.debug("Safe error end");
+  this.browser = null;
   this.tab = null; //Holds a reference to the created tab, if any
   this.window = win;
   this.knownFrames = [];
