@@ -442,8 +442,10 @@ MarionetteServerConnection.prototype = {
    */
   whenBrowserStarted: function MDA_whenBrowserStarted(win, newSession) {
     try {
+      logger.info("Loading content listener?");
       if (!Services.prefs.getBoolPref("marionette.contentListener") || !newSession) {
         this.curBrowser.loadFrameScript(FRAME_SCRIPT, win);
+        logger.info("Loaded content listener : " + FRAME_SCRIPT);
       }
     }
     catch (e) {
@@ -560,6 +562,7 @@ MarionetteServerConnection.prototype = {
       this.addBrowser(this.getCurrentWindow());
       this.curBrowser.startSession(false, this.getCurrentWindow(),
                                    this.whenBrowserStarted);
+      logger.info("Right before restart...");
       this.messageManager.broadcastAsyncMessage("Marionette:restart", {});
     }
     else {

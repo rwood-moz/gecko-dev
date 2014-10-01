@@ -77,7 +77,7 @@ let scrolling = false;
 let mouseEventsOnly = false;
 
 Cu.import("resource://gre/modules/Log.jsm");
-let logger = Log.repository.getLogger("Marionette");
+let logger = Log.repository.getLogger("Marionette Listener");
 logger.info("loaded marionette-listener.js");
 logger.debug("I AM KING OF THE FOO");
 let modalHandler = function() {
