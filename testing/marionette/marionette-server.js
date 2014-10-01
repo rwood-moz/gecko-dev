@@ -452,6 +452,7 @@ MarionetteServerConnection.prototype = {
       //there may not always be a content process
       logger.info("could not load listener into content for page: " + win.location.href);
     }
+    logger.info("Setting utils window: " + typeof utils);
     utils.window = win;
   },
 
@@ -557,13 +558,18 @@ MarionetteServerConnection.prototype = {
       waitForWindow.call(this);
     }
     else if ((appName != "Firefox") && (this.curBrowser == null)) {
-      logger.info("Waiting for b2g startup...");
-      // If there is a content listener, then we just wake it up
-      this.addBrowser(this.getCurrentWindow());
-      this.curBrowser.startSession(false, this.getCurrentWindow(),
-                                   this.whenBrowserStarted);
-      logger.info("Right before restart...");
-      this.messageManager.broadcastAsyncMessage("Marionette:restart", {});
+      try {
+        logger.info("Waiting for b2g startup...");
+        // If there is a content listener, then we just wake it up
+        this.addBrowser(this.getCurrentWindow());
+        this.curBrowser.startSession(false, this.getCurrentWindow(),
+                                     this.whenBrowserStarted);
+        logger.info("Right before restart...");
+        this.messageManager.broadcastAsyncMessage("Marionette:restart", {});
+        logger.info("Right after restart...");
+      } catch (e) {
+        logger.error("Error sending message: ", e.toString());
+      }
     }
     else {
       this.sendError("Session already running", 500, null,
