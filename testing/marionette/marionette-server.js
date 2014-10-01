@@ -444,6 +444,7 @@ MarionetteServerConnection.prototype = {
     try {
       logger.info("Loading content listener?");
       if (!Services.prefs.getBoolPref("marionette.contentListener") || !newSession) {
+        logger.info("readyState: " + this.curBrowser.contentWindow.document.readyState);
         this.curBrowser.loadFrameScript(FRAME_SCRIPT, win);
         logger.info("Loaded content listener : " + FRAME_SCRIPT);
       }
