@@ -60,9 +60,16 @@ this.FileUtils = {
    * @return  nsIFile object for the location specified.
    */
   getDir: function FileUtils_getDir(key, pathArray, shouldCreate, followLinks) {
-    var dir = gDirService.get(key, Ci.nsIFile);
-    for (var i = 0; i < pathArray.length; ++i) {
-      dir.append(pathArray[i]);
+    try {
+      dump("Get Dir: " + key + "| " + pathArray.join(', ') + "| " + new Error().stack);
+      dump("Get Dir: " + new Error().stack);
+      var dir = gDirService.get(key, Ci.nsIFile);
+      for (var i = 0; i < pathArray.length; ++i) {
+        dir.append(pathArray[i]);
+      }
+    } catch (e) {
+      dump("Fucked up during: " + key + "\n");
+      throw e;
     }
 
     if (shouldCreate) {
