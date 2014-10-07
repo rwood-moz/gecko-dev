@@ -5,3 +5,5 @@
 # This file is included at the bottom of all b2g mozconfigs
 
 . "$topsrcdir/build/mozconfig.common.override"
+
+ac_add_options --enable-chrome-format=flat
