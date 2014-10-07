@@ -444,7 +444,19 @@ MarionetteServerConnection.prototype = {
     try {
       logger.info("Loading content listener?");
       if (!Services.prefs.getBoolPref("marionette.contentListener") || !newSession) {
-        logger.info("readyState: " + this.curBrowser.contentWindow.document.readyState);
+        //let doc = this.curBrowser.window.document;
+        //let sysapp = this.curBrowser.window.document.getElementById("systemapp");
+        //if (!sysapp) {
+          //logger.error("error initializing system app waiting some more...");
+          //let checkTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+          //checkTimer.initWithCallback(this.whenBrowserStarted.bind(this, win, newSession), 100,
+                                      //Ci.nsITimer.TYPE_ONE_SHOT);
+          //return;
+        //}
+        //let state = sysapp.contentWindow.document.readyState;
+        //let location = sysapp.contentWindow.document.location.href;
+        //logger.info("current system app state: " + state);
+        //logger.info("current system app location: " + location);
         this.curBrowser.loadFrameScript(FRAME_SCRIPT, win);
         logger.info("Loaded content listener : " + FRAME_SCRIPT);
       }
@@ -452,6 +464,7 @@ MarionetteServerConnection.prototype = {
     catch (e) {
       //there may not always be a content process
       logger.info("could not load listener into content for page: " + win.location.href);
+      logger.error(e.toString());
     }
     logger.info("Setting utils window: " + typeof utils);
     utils.window = win;
