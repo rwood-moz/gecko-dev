@@ -7,7 +7,7 @@
 function debug(s) {
   dump("-*- B2GAppMigrator.js: " + s + "\n");
 }
-const DEBUG = false;
+const DEBUG = true;
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
