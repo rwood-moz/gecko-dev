@@ -225,6 +225,7 @@ var shell = {
   },
 
   start: function shell_start() {
+    debug('start ' + new Error().stack);
     this._started = true;
 
     // This forces the initialization of the cookie service before we hit the
@@ -288,7 +289,7 @@ var shell = {
     //              mozbrowser="true" allowfullscreen="true"
     //              style="overflow: hidden; height: 100%; width: 100%; border: none;"
     //              src="data:text/html;charset=utf-8,%3C!DOCTYPE html>%3Cbody style='background:black;'>"/>
-    dump("SYSTEM APP FRAME LOAD START \n");
+    debug("SYSTEM APP FRAME LOAD START \n");
     let systemAppFrame =
       document.createElementNS('http://www.w3.org/1999/xhtml', 'html:iframe');
     systemAppFrame.setAttribute('id', 'systemapp');
