@@ -47,6 +47,7 @@ var SettingsListener = {
   },
 
   observe: function sl_observe(name, defaultValue, callback) {
+    dump('Observer start: ' + name + '\n');
     var settings = window.navigator.mozSettings;
     if (!settings) {
       window.setTimeout(function() { callback(defaultValue); });
@@ -68,6 +69,8 @@ var SettingsListener = {
     this._callbacks[name] = callback;
   }
 };
+
+dump('begin init...\n');
 
 SettingsListener.init();
 
@@ -596,3 +599,4 @@ for (let key in settingsToObserve) {
   });
 };
 
+dump(' done settings ...\n');
