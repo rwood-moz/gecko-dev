@@ -470,6 +470,7 @@ nsFrameMessageManager::RemoveDelayedFrameScript(const nsAString& aURL)
 {
   for (uint32_t i = 0; i < mPendingScripts.Length(); ++i) {
     if (mPendingScripts[i] == aURL) {
+      printf("[Remove delayed frame script] Will remove %s \n", NS_ConvertUTF16toUTF8(aURL).get());
       mPendingScripts.RemoveElementAt(i);
       mPendingScriptsGlobalStates.RemoveElementAt(i);
       break;
@@ -1118,7 +1119,9 @@ nsFrameMessageManager::LoadPendingScripts(nsFrameMessageManager* aManager,
     LoadPendingScripts(aManager->mParentManager, aChildMM);
   }
 
+  printf("Load pending scripts");
   for (uint32_t i = 0; i < aManager->mPendingScripts.Length(); ++i) {
+    printf("[pending scripts] Will load %s \n", NS_ConvertUTF16toUTF8(aManager->mPendingScripts[i]).get());
     aChildMM->LoadFrameScript(aManager->mPendingScripts[i],
                               false,
                               aManager->mPendingScriptsGlobalStates[i]);
@@ -1153,7 +1156,9 @@ nsFrameMessageManager::InitWithCallback(MessageManagerCallback* aCallback)
     mParentManager->AddChildManager(this);
   }
 
+  printf("[init with callback] Load pending scripts");
   for (uint32_t i = 0; i < mPendingScripts.Length(); ++i) {
+    printf("[init with callback] Will load %s \n", NS_ConvertUTF16toUTF8(mPendingScripts[i]).get());
     LoadFrameScript(mPendingScripts[i], false, mPendingScriptsGlobalStates[i]);
   }
 }
