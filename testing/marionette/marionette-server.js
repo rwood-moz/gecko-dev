@@ -80,12 +80,13 @@ Services.obs.addObserver(function() {
 }, "system-message-listener-ready", false);
 
 
+var lastPing = Date.now();
 function ping() {
-  let checkTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-  checkTimer.initWithCallback(ping, 1000, Ci.nsITimer.TYPE_ONE_SHOT);
-  logger.info('marionette ping');
+  logger.info('@nfo marionette ping: ' + (Date.now() - lastPing));
+  lastPing = Date.now();
 }
-
+let checkTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+checkTimer.initWithCallback(ping, 500, Ci.nsITimer.TYPE_REPEATING_SLACK);
 ping();
 
 /*
@@ -165,6 +166,7 @@ MarionetteServerConnection.prototype = {
    * Debugger transport callbacks:
    */
   onPacket: function MSC_onPacket(aPacket) {
+    dump('@nfo GOT PACKET ' + Date.now() + '|' + JSON.stringify(aPacket) + '| \n');
     // Dispatch the request
     if (this.requestTypes && this.requestTypes[aPacket.name]) {
       try {

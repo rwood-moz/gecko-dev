@@ -445,9 +445,7 @@ nsFrameMessageManager::LoadFrameScript(const nsAString& aURL,
   }
 
   if (mCallback) {
-#ifdef DEBUG_smaug
     printf("Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
-#endif
     NS_ENSURE_TRUE(mCallback->DoLoadFrameScript(aURL, aRunInGlobalScope),
                    NS_ERROR_FAILURE);
   }
@@ -1429,7 +1427,9 @@ void
 nsFrameScriptExecutor::LoadFrameScriptInternal(const nsAString& aURL,
                                                bool aRunInGlobalScope)
 {
+  printf("[internal] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
   if (!mGlobal || !sCachedScripts) {
+    printf("[internal skip] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
     return;
   }
 
