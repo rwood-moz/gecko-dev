@@ -79,6 +79,15 @@ Services.obs.addObserver(function() {
   systemMessageListenerReady = true;
 }, "system-message-listener-ready", false);
 
+
+function ping() {
+  let checkTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+  checkTimer.initWithCallback(ping, 1000, Ci.nsITimer.TYPE_ONE_SHOT);
+  logger.info('marionette ping');
+}
+
+ping();
+
 /*
  * Custom exceptions
  */
@@ -444,21 +453,23 @@ MarionetteServerConnection.prototype = {
     try {
       logger.info("Loading content listener?");
       if (!Services.prefs.getBoolPref("marionette.contentListener") || !newSession) {
-        let doc = this.curBrowser.window.document;
-        let sysapp = this.curBrowser.window.document.getElementById("systemapp");
-        if (!sysapp) {
-          logger.error("error initializing system app waiting some more...");
-          let checkTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
-          checkTimer.initWithCallback(this.whenBrowserStarted.bind(this, win, newSession), 100,
-                                      Ci.nsITimer.TYPE_ONE_SHOT);
-          return;
-        }
-        let state = sysapp.contentWindow.document.readyState;
-        let location = sysapp.contentWindow.document.location.href;
-        logger.info("current system app state: " + state);
-        logger.info("current system app location: " + location);
+        //let doc = this.curBrowser.window.document;
+        //let sysapp = this.curBrowser.window.document.getElementById("systemapp");
+        //if (!sysapp) {
+          //logger.error("error initializing system app waiting some more...");
+          //let checkTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+          //checkTimer.initWithCallback(this.whenBrowserStarted.bind(this, win, newSession), 100,
+                                      //Ci.nsITimer.TYPE_ONE_SHOT);
+          //return;
+        //}
+        //let state = sysapp.contentWindow.document.readyState;
+        //let location = sysapp.contentWindow.document.location.href;
+        //logger.info("current system app state: " + state);
+        //logger.info("current system app location: " + location);
+        logger.info("BEGIN LOAD FRAME SCRIPT");
         this.curBrowser.loadFrameScript(FRAME_SCRIPT, win);
-        logger.info("Loaded content listener : " + FRAME_SCRIPT);
+        logger.info("DONE LOAD FRAME SCRIPT");
+        //logger.info("Loaded content listener : " + FRAME_SCRIPT);
       }
     }
     catch (e) {
