@@ -3,6 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+dump("WTF LISTENER!\n\n")
 let {classes: Cc, interfaces: Ci, utils: Cu, results: Cr} = Components;
 
 let uuidGen = Cc["@mozilla.org/uuid-generator;1"]
@@ -77,7 +78,7 @@ let scrolling = false;
 let mouseEventsOnly = false;
 
 Cu.import("resource://gre/modules/Log.jsm");
-let logger = Log.repository.getLogger("Marionette Listener");
+let logger = Log.repository.getLogger("Marionette");
 logger.info("loaded marionette-listener.js");
 logger.debug("I AM KING OF THE FOO");
 let modalHandler = function() {
