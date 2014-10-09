@@ -436,16 +436,18 @@ nsFrameMessageManager::LoadFrameScript(const nsAString& aURL,
       // Cache for future windows or frames
       mPendingScripts.AppendElement(aURL);
       mPendingScriptsGlobalStates.AppendElement(aRunInGlobalScope);
+      printf("[allow delayed] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
     } else if (!mCallback) {
       // We're frame message manager, which isn't connected yet.
       mPendingScripts.AppendElement(aURL);
       mPendingScriptsGlobalStates.AppendElement(aRunInGlobalScope);
+      printf("[no mCallback] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
       return NS_OK;
     }
   }
 
   if (mCallback) {
-    printf("Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
+    printf("[mCallback] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
     NS_ENSURE_TRUE(mCallback->DoLoadFrameScript(aURL, aRunInGlobalScope),
                    NS_ERROR_FAILURE);
   }
@@ -456,6 +458,7 @@ nsFrameMessageManager::LoadFrameScript(const nsAString& aURL,
     if (mm) {
       // Use false here, so that child managers don't cache the script, which
       // is already cached in the parent.
+      printf("[message manager] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
       mm->LoadFrameScript(aURL, false, aRunInGlobalScope);
     }
   }
