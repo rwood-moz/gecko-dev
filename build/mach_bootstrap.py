@@ -63,7 +63,6 @@ SEARCH_PATHS = [
     'testing/mozbase/moztest',
     'testing/mozbase/mozversion',
     'testing/mozbase/manifestparser',
-    'testing/marionetta/client',
     'xpcom/idl-parser',
 ]
 
