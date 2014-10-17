@@ -26,7 +26,7 @@ apt-get install -y                  \
   nano                              \
   ;
 
-# Then let's install all firefox build dependencies, this are extracted from
+# Then let's install all firefox build dependencies, these are extracted from
 # mozboot. See python/mozboot/bin/bootstrap.py in mozilla-central.
 apt-get install -y                  \
   autoconf2.13                      \

@@ -21,29 +21,19 @@
     "env": {
       "MOZCONFIG": "/home/worker/mozconfigs/b2g-desktop",
       "REPOSITORY": "https://hg.mozilla.org/mozilla-central/",
-      "REVISION": "797d84e44aee"
+      "REVISION": "cc7fc5918561"
     },
     "command": [
       "build-b2g-desktop.sh"
     ],
     "artifacts": {
-      "public/target.linux-x86_64.tar.bz2": {
-        "type": "file",
-        "path": "/home/worker/object-folder/dist/target.linux-x86_64.tar.bz2",
-        "expires": "2015-10-12T06:36:04.550Z"
-      },
-      "public/target.tests.zip": {
-        "type": "file",
-        "path": "/home/worker/object-folder/dist/target.tests.zip",
-        "expires": "2015-10-12T06:36:04.550Z"
-      },
-      "public/target.linux-x86_64.json": {
-        "type": "file",
-        "path": "/home/worker/object-folder/dist/target.linux-x86_64.json",
+      "public/build": {
+        "type": "directory",
+        "path": "/home/worker/artifacts/",
         "expires": "2015-10-12T06:36:04.550Z"
       }
     },
-    "image": "quay.io/mozilla/builder:0.0.2",
+    "image": "quay.io/mozilla/builder:0.0.11",
     "maxRunTime": 6000
   },
   "extra": {

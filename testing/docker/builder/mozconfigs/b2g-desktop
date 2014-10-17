@@ -31,7 +31,7 @@ ENABLE_MARIONETTE=1
 ac_add_options --disable-elf-hack
 export CXXFLAGS=-DMOZ_ENABLE_JS_DUMP
 
-GAIADIR=$topsrcdir/../gaia/source
+GAIADIR=/home/worker/gaia/source
 
 . "$topsrcdir/b2g/config/mozconfigs/common.override"
 

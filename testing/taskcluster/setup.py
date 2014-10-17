@@ -11,10 +11,9 @@ with open('requirements.txt') as f:
 setup(name='taskcluster_graph',
       version=version,
       description='',
-      long_description='See http://marionette-client.readthedocs.org/',
-      classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      classifiers=[],
       keywords='mozilla',
       license='MPL',
-      packages=['logic'],
+      packages=['taskcluster_graph'],
       install_requires=deps,
       )

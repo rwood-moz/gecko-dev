@@ -1,4 +1,4 @@
-#!/bin/bash -ve
+#!/bin/bash -vex
 
 gecko_dir=/home/worker/mozilla-central/source
 gaia_dir=/home/worker/gaia/source
