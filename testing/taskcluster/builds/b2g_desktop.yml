@@ -1,0 +1,31 @@
+# Chunking task for marionette js tests...
+---
+task:
+  metadata:
+    source: http://todo.com/soon
+    owner: jlal@mozilla.com
+    name: B2G Desktop Opt
+    description: B2G Desktop Opt
+
+  workerType: b2gbuild
+  provisionerId: aws-provisioner
+
+  payload:
+    env:
+      MOZCONFIG: '/home/worker/mozconfigs/b2g-desktop'
+      # revision/project params defined originally here https://github.com/taskcluster/taskcluster-try/blob/master/try/instantiate.js
+      REVISION: '{{revision}}'
+      REPOSITORY: 'https://hg.mozilla.org/{{project}}'
+
+    command:
+      - build-b2g-desktop.sh
+
+    artifacts:
+      'public/build':
+        type: directory
+        path: '/home/worker/artifacts/'
+        expires: '{{nextYear}}'
+
+  extra:
+    treeherder:
+      symbol: B
