@@ -24,7 +24,7 @@ from mach.decorators import (
 
 from taskcluster_graph.commit_parser import parse_commit
 from taskcluster_graph.slugid import slugid
-from taskcluster_graph.from_now import json_time_from_now
+from taskcluster_graph.from_now import json_time_from_now, current_json_time
 
 import taskcluster_graph.build_task
 
@@ -226,7 +226,7 @@ class CIBuild(object):
             'revision': revision,
             'owner': owner,
             'from_now': json_time_from_now,
-            'now': datetime.datetime.now().isoformat()
+            'now': current_json_time()
         }
 
         try:
@@ -238,9 +238,6 @@ class CIBuild(object):
             )
             sys.exit(1)
 
-
         taskcluster_graph.build_task.validate(build_task)
-        build_task['task']['created'] = json_time_from_now('0 minutes')
-        build_task['task']['deadline'] = json_time_from_now('24 hours')
 
         print(json.dumps(build_task['task'], indent=4))
