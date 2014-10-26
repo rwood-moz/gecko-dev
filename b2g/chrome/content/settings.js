@@ -601,7 +601,7 @@ for (let key in settingsToObserve) {
 
 var last = Date.now();
 setInterval(function() {
-  dump("@settting.js ALIVE: " + Date.now() - last)
+  dump("@settting.js ALIVE: " + (Date.now() - last) + '\n');
   last = Date.now();
 }, 500);
 

@@ -930,6 +930,8 @@ nsFrameMessageManager::ReceiveMessage(nsISupports* aTarget,
 {
   nsAutoTObserverArray<nsMessageListenerInfo, 1>* listeners =
     mListeners.Get(aMessage);
+
+  printf("[ReceiveMessage-start] %s \n", NS_ConvertUTF16toUTF8(aMessage).get());
   if (listeners) {
 
     MMListenerRemover lr(this);
@@ -1089,6 +1091,7 @@ nsFrameMessageManager::ReceiveMessage(nsISupports* aTarget,
       }
     }
   }
+  printf("[ReceiveMessage-done] %s \n", NS_ConvertUTF16toUTF8(aMessage).get());
   nsRefPtr<nsFrameMessageManager> kungfuDeathGrip = mParentManager;
   return mParentManager ? mParentManager->ReceiveMessage(aTarget, aMessage,
                                                          aIsSync, aCloneData,
@@ -1679,6 +1682,7 @@ public:
                                   JS::Handle<JSObject *> aCpows,
                                   nsIPrincipal* aPrincipal)
   {
+    printf("Send async message: %s\n", NS_ConvertUTF16toUTF8(aMessage).get());
     nsRefPtr<nsIRunnable> ev =
       new nsAsyncMessageToSameProcessChild(aCx, aMessage, aData, aCpows,
                                            aPrincipal);
