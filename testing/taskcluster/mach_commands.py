@@ -224,7 +224,6 @@ class CIBuild(object):
         if not revision:
             revision = get_latest_hg_revision(repository)
 
-        print(os.environ['GIT_REPOSITORY'])
         build_parameters = {
             'docker_image': docker_image,
             'repository': repository,

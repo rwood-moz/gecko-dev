@@ -11,6 +11,7 @@ COPY           mozconfigs/           /home/worker/mozconfigs/
 RUN            mkdir -p              /home/worker/bin
 COPY           build.sh              /home/worker/bin/build.sh
 COPY           build-b2g-desktop.sh  /home/worker/bin/build-b2g-desktop.sh
+COPY           build-git-b2g-desktop.sh  /home/worker/bin/build-git-b2g-desktop.sh
 COPY           get_gaia_repo.js      /home/worker/bin/get_gaia_repo.js
 COPY           get_gaia_revision.js  /home/worker/bin/get_gaia_revision.js
 COPY           build-setup.sh        /home/worker/bin/build-setup.sh

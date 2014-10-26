@@ -40,7 +40,13 @@ GAIA_REPO="https://hg.mozilla.org$(get_gaia_repo.js)"
 hg pull -r $GAIA_REV $GAIA_REPO;
 hg update $GAIA_REV;
 
-cd /home/worker/mozilla-central/source;
+# Symlink gaia!
+
+# Ensure its not there in the cache this prevents problems due to caches...
+rm -Rf /home/worker/mozilla-central/source/gaia
+ln -s $gaia_dir $gecko_git_dir/gaia
+
+cd $gecko_git_dir;
 ./mach build;
 
 ### Make package
