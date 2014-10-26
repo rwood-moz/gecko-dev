@@ -1457,21 +1457,30 @@ nsFrameScriptExecutor::LoadFrameScriptInternal(const nsAString& aURL,
 
   JS::Rooted<JSObject*> global(rt, mGlobal->GetJSObject());
   if (global) {
+    printf("[internal -global] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
     AutoEntryScript aes(xpc::NativeGlobal(global));
     aes.TakeOwnershipOfErrorReporting();
     JSContext* cx = aes.cx();
     if (script) {
+      printf("[internal -script] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
       if (aRunInGlobalScope) {
+        printf("[internal - run in global scope] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
         JS::CloneAndExecuteScript(cx, global, script);
       } else {
+        printf("[internal - do not run in global scope] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
         JS::Rooted<JSObject*> scope(cx);
         bool ok = js::ExecuteInGlobalAndReturnScope(cx, global, script, &scope);
         if (ok) {
+          printf("[internal - ran in scope] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
           // Force the scope to stay alive.
           mAnonymousGlobalScopes.AppendElement(scope);
+        } else {
+          printf("[internal - did not run in scope] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
         }
       }
     }
+  } else {
+    printf("[internal - skip] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
   }
 }
 
