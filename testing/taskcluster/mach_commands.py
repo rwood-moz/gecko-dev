@@ -89,6 +89,9 @@ def docker_image(name):
 
     return '{}/{}:{}'.format(repository, name, version)
 
+def get_env(name):
+    return os.environ.get(name, "")
+
 @CommandProvider
 class TryGraph(object):
     @Command('trygraph', category="ci",
@@ -120,7 +123,8 @@ class TryGraph(object):
             'revision': revision,
             'owner': owner,
             'from_now': json_time_from_now,
-            'now': datetime.datetime.now().isoformat()
+            'now': current_json_time,
+            'env': get_env
         }
 
         # Task graph we are generating for taskcluster...
@@ -220,13 +224,15 @@ class CIBuild(object):
         if not revision:
             revision = get_latest_hg_revision(repository)
 
+        print(os.environ['GIT_REPOSITORY'])
         build_parameters = {
             'docker_image': docker_image,
             'repository': repository,
             'revision': revision,
             'owner': owner,
             'from_now': json_time_from_now,
-            'now': current_json_time()
+            'now': current_json_time(),
+            'env': get_env,
         }
 
         try:
