@@ -4,7 +4,7 @@
 
 "use strict";
 
-let DEBUG = 0;
+let DEBUG = 1;
 let debug;
 if (DEBUG) {
   debug = function (s) { dump("-*- IndexedDBHelper: " + s + "\n"); }
@@ -133,6 +133,15 @@ IndexedDBHelper.prototype = {
       txn.oncomplete = function (event) {
         if (DEBUG) debug("Transaction complete. Returning to callback.");
         if (successCb) {
+          if (txn) {
+            for (var key in txn) {
+              try {
+                dump('IDB KEY: ' + key + ':' + txn[key]);
+              } catch (e) {
+                dump('Failed to fetch : ' + key + '\n');
+              }
+            }
+          }
           successCb(txn.result);
         }
       };

@@ -2170,11 +2170,13 @@ nsFrameLoader::DoLoadFrameScript(const nsAString& aURL, bool aRunInGlobalScope)
 {
   mozilla::dom::PBrowserParent* tabParent = GetRemoteBrowser();
   if (tabParent) {
+    printf("[parent] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
     return tabParent->SendLoadRemoteScript(nsString(aURL), aRunInGlobalScope);
   }
   nsRefPtr<nsInProcessTabChildGlobal> tabChild =
     static_cast<nsInProcessTabChildGlobal*>(GetTabChildGlobalAsEventTarget());
   if (tabChild) {
+    printf("[child] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
     tabChild->LoadFrameScript(aURL, aRunInGlobalScope);
   }
   return true;

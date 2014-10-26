@@ -209,10 +209,13 @@ var shell = {
         return homeSrc;
     } catch (e) {}
 
+    dump("HOME URL\n");
+    dump("I AM THE FOO\n")
     return Services.prefs.getCharPref('b2g.system_startup_url');
   },
 
   get manifestURL() {
+    dump("MANIFEST URL\n");
     return Services.prefs.getCharPref('b2g.system_manifest_url');
   },
 
@@ -222,6 +225,7 @@ var shell = {
   },
 
   start: function shell_start() {
+    debug('start ' + new Error().stack);
     this._started = true;
 
     // This forces the initialization of the cookie service before we hit the
@@ -285,6 +289,7 @@ var shell = {
     //              mozbrowser="true" allowfullscreen="true"
     //              style="overflow: hidden; height: 100%; width: 100%; border: none;"
     //              src="data:text/html;charset=utf-8,%3C!DOCTYPE html>%3Cbody style='background:black;'>"/>
+    debug("SYSTEM APP FRAME LOAD START \n");
     let systemAppFrame =
       document.createElementNS('http://www.w3.org/1999/xhtml', 'html:iframe');
     systemAppFrame.setAttribute('id', 'systemapp');
@@ -340,7 +345,9 @@ var shell = {
     IndexedDBPromptHelper.init();
     CaptivePortalLoginHelper.init();
 
+    dump("SYSTEM APP FRAME LOAD SYTEM APP START \n");
     this.contentBrowser.src = homeURL;
+    dump("SYSTEM APP FRAME LOAD SYTEM APP  DONE \n");
     this.isHomeLoaded = false;
 
     ppmm.addMessageListener("content-handler", this);

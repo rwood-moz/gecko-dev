@@ -5,6 +5,7 @@
 "use strict";
 
 const FRAME_SCRIPT = "chrome://marionette/content/marionette-listener.js";
+dump("WTFS MAN!\n\n")
 
 // import logger
 Cu.import("resource://gre/modules/Log.jsm");
@@ -78,6 +79,16 @@ Services.obs.addObserver(function() {
   systemMessageListenerReady = true;
 }, "system-message-listener-ready", false);
 
+
+var lastPing = Date.now();
+function ping() {
+  logger.info('@nfo marionette ping: ' + (Date.now() - lastPing));
+  lastPing = Date.now();
+}
+let checkTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+checkTimer.initWithCallback(ping, 500, Ci.nsITimer.TYPE_REPEATING_SLACK);
+ping();
+
 /*
  * Custom exceptions
  */
@@ -136,7 +147,9 @@ function MarionetteServerConnection(aPrefix, aTransport, aServer)
   this.mainFrame = null; //topmost chrome frame
   this.curFrame = null; // chrome iframe that currently has focus
   this.mainContentFrameId = null;
+  logger.debug("Get temp dir for chrome scripts");
   this.importedScripts = FileUtils.getFile('TmpD', ['marionetteChromeScripts']);
+  logger.debug("Get temp dir for chrome scripts done" + this.importedScripts.path);
   this.importedScriptHashes = {"chrome" : [], "content": []};
   this.currentFrameElement = null;
   this.testName = null;
@@ -153,6 +166,7 @@ MarionetteServerConnection.prototype = {
    * Debugger transport callbacks:
    */
   onPacket: function MSC_onPacket(aPacket) {
+    dump('@nfo GOT PACKET ' + Date.now() + '|' + JSON.stringify(aPacket) + '| \n');
     // Dispatch the request
     if (this.requestTypes && this.requestTypes[aPacket.name]) {
       try {
@@ -439,14 +453,33 @@ MarionetteServerConnection.prototype = {
    */
   whenBrowserStarted: function MDA_whenBrowserStarted(win, newSession) {
     try {
+      logger.info("Loading content listener?");
       if (!Services.prefs.getBoolPref("marionette.contentListener") || !newSession) {
+        //let doc = this.curBrowser.window.document;
+        //let sysapp = this.curBrowser.window.document.getElementById("systemapp");
+        //if (!sysapp) {
+          //logger.error("error initializing system app waiting some more...");
+          //let checkTimer = Cc["@mozilla.org/timer;1"].createInstance(Ci.nsITimer);
+          //checkTimer.initWithCallback(this.whenBrowserStarted.bind(this, win, newSession), 100,
+                                      //Ci.nsITimer.TYPE_ONE_SHOT);
+          //return;
+        //}
+        //let state = sysapp.contentWindow.document.readyState;
+        //let location = sysapp.contentWindow.document.location.href;
+        //logger.info("current system app state: " + state);
+        //logger.info("current system app location: " + location);
+        logger.info("BEGIN LOAD FRAME SCRIPT");
         this.curBrowser.loadFrameScript(FRAME_SCRIPT, win);
+        logger.info("DONE LOAD FRAME SCRIPT");
+        //logger.info("Loaded content listener : " + FRAME_SCRIPT);
       }
     }
     catch (e) {
       //there may not always be a content process
       logger.info("could not load listener into content for page: " + win.location.href);
+      logger.error(e.toString());
     }
+    logger.info("Setting utils window: " + typeof utils);
     utils.window = win;
   },
 
@@ -485,10 +518,12 @@ MarionetteServerConnection.prototype = {
     * Given a file name, this will delete the file from the temp directory if it exists
     */
   deleteFile: function(filename) {
+    logger.debug("Delete filename " + filename);
     let file = FileUtils.getFile('TmpD', [filename.toString()]);
     if (file.exists()) {
       file.remove(true);
     }
+    logger.debug("Delete filename " + filename + " done");
   },
 
   /**
@@ -546,14 +581,22 @@ MarionetteServerConnection.prototype = {
     }
 
     if (!Services.prefs.getBoolPref("marionette.contentListener")) {
+      logger.info("Wait for window in parent...");
       waitForWindow.call(this);
     }
     else if ((appName != "Firefox") && (this.curBrowser == null)) {
-      // If there is a content listener, then we just wake it up
-      this.addBrowser(this.getCurrentWindow());
-      this.curBrowser.startSession(false, this.getCurrentWindow(),
-                                   this.whenBrowserStarted);
-      this.messageManager.broadcastAsyncMessage("Marionette:restart", {});
+      try {
+        logger.info("Waiting for b2g startup...");
+        // If there is a content listener, then we just wake it up
+        this.addBrowser(this.getCurrentWindow());
+        this.curBrowser.startSession(false, this.getCurrentWindow(),
+                                     this.whenBrowserStarted);
+        logger.info("Right before restart...");
+        this.messageManager.broadcastAsyncMessage("Marionette:restart", {});
+        logger.info("Right after restart...");
+      } catch (e) {
+        logger.error("Error sending message: ", e.toString());
+      }
     }
     else {
       this.sendError("Session already running", 500, null,
@@ -2331,19 +2374,24 @@ MarionetteServerConnection.prototype = {
     if (this.context == "chrome") {
       let file;
       if (this.importedScripts.exists()) {
+        logger.debug("Import script file " + this.importedScripts);
         file = FileUtils.openFileOutputStream(this.importedScripts,
             FileUtils.MODE_APPEND | FileUtils.MODE_WRONLY);
+        logger.debug("Import script file " + this.importedScripts + " done");
       }
       else {
+        logger.debug("Create imported scripts");
         //Note: The permission bits here don't actually get set (bug 804563)
         this.importedScripts.createUnique(
             Components.interfaces.nsIFile.NORMAL_FILE_TYPE, parseInt("0666", 8));
         file = FileUtils.openFileOutputStream(this.importedScripts,
             FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE);
         this.importedScripts.permissions = parseInt("0666", 8); //actually set permissions
+        logger.debug("Create imported scripts done");
       }
       file.write(aRequest.parameters.script, aRequest.parameters.script.length);
       file.close();
+      logger.debug("Done importing scripts and writing files");
       this.sendOk(command_id);
     }
     else {
@@ -2783,7 +2831,7 @@ MarionetteServerConnection.prototype.requestTypes = {
 function BrowserObj(win, server) {
   this.DESKTOP = "desktop";
   this.B2G = "B2G";
-  this.browser;
+  this.browser = null;
   this.tab = null; //Holds a reference to the created tab, if any
   this.window = win;
   this.knownFrames = [];
@@ -2835,6 +2883,7 @@ BrowserObj.prototype = {
    */
   startSession: function BO_startSession(newTab, win, callback) {
     if (appName != "Firefox") {
+      logger.info("Start session in b2g...");
       callback(win, newTab);
     }
     else if (newTab) {
@@ -2933,7 +2982,7 @@ this.MarionetteServer = function MarionetteServer(port, forceLocal) {
   logger.info("Listening on port " + socket.port + "\n");
   socket.asyncListen(this);
   this.listener = socket;
-  this.nextConnId = 0;
+  this.nextConnID = 0;
   this.connections = {};
 };
 
@@ -2941,6 +2990,7 @@ MarionetteServer.prototype = {
   onSocketAccepted: function(serverSocket, clientSocket)
   {
     logger.debug("accepted connection on " + clientSocket.host + ":" + clientSocket.port);
+    logger.debug("I HAZ WIN");
 
     let input = clientSocket.openInputStream(0, 0, 0);
     let output = clientSocket.openOutputStream(0, 0, 0);

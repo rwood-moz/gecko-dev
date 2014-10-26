@@ -31,12 +31,15 @@ var SettingsListener = {
   _callbacks: {},
 
   init: function sl_init() {
+    dump('Start settings listener...\n');
     if ('mozSettings' in navigator && navigator.mozSettings) {
       navigator.mozSettings.onsettingchange = this.onchange.bind(this);
+      dump('Start settings listener done...\n');
     }
   },
 
   onchange: function sl_onchange(evt) {
+    dump('Settings listener change: ' + evt.settingName + '\n');
     var callback = this._callbacks[evt.settingName];
     if (callback) {
       callback(evt.settingValue);
@@ -44,6 +47,7 @@ var SettingsListener = {
   },
 
   observe: function sl_observe(name, defaultValue, callback) {
+    dump('Observer start: ' + name + '\n');
     var settings = window.navigator.mozSettings;
     if (!settings) {
       window.setTimeout(function() { callback(defaultValue); });
@@ -56,13 +60,17 @@ var SettingsListener = {
 
     var req = settings.createLock().get(name);
     req.addEventListener('success', (function onsuccess() {
-      callback(typeof(req.result[name]) != 'undefined' ?
-        req.result[name] : defaultValue);
+      var value = typeof(req.result[name]) != 'undefined' ?
+        req.result[name] : defaultValue;
+      dump('Fire observer for ' + name + ' ' + value + '\n');
+      callback(value);
     }));
 
     this._callbacks[name] = callback;
   }
 };
+
+dump('begin init...\n');
 
 SettingsListener.init();
 
@@ -99,6 +107,7 @@ SettingsListener.observe('language.current', 'en-US', function(value) {
   Services.prefs.setCharPref(prefName, value);
 
   if (shell.hasStarted() == false) {
+    dump("--- SHELL JS START ---\n");
     shell.start();
   }
 });
@@ -590,3 +599,4 @@ for (let key in settingsToObserve) {
   });
 };
 
+dump(' done settings ...\n');
