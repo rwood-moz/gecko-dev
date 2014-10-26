@@ -436,7 +436,7 @@ nsFrameMessageManager::LoadFrameScript(const nsAString& aURL,
       // Cache for future windows or frames
       mPendingScripts.AppendElement(aURL);
       mPendingScriptsGlobalStates.AppendElement(aRunInGlobalScope);
-      printf("[allow delayed] Will load %s \n", NS_ConvertUTF16toUTF8(aURL).get());
+      printf("[allow delayed] Will load %d %d %s \n", mChrome, mGlobal, NS_ConvertUTF16toUTF8(aURL).get());
     } else if (!mCallback) {
       // We're frame message manager, which isn't connected yet.
       mPendingScripts.AppendElement(aURL);
@@ -1121,7 +1121,7 @@ nsFrameMessageManager::LoadPendingScripts(nsFrameMessageManager* aManager,
 
   printf("Load pending scripts");
   for (uint32_t i = 0; i < aManager->mPendingScripts.Length(); ++i) {
-    printf("[pending scripts] Will load %s \n", NS_ConvertUTF16toUTF8(aManager->mPendingScripts[i]).get());
+    printf("[pending scripts] %d %d Will load %s \n", mChrome, mGlobal, NS_ConvertUTF16toUTF8(aManager->mPendingScripts[i]).get());
     aChildMM->LoadFrameScript(aManager->mPendingScripts[i],
                               false,
                               aManager->mPendingScriptsGlobalStates[i]);
@@ -1158,7 +1158,7 @@ nsFrameMessageManager::InitWithCallback(MessageManagerCallback* aCallback)
 
   printf("[init with callback] Load pending scripts");
   for (uint32_t i = 0; i < mPendingScripts.Length(); ++i) {
-    printf("[init with callback] Will load %s \n", NS_ConvertUTF16toUTF8(mPendingScripts[i]).get());
+    printf("[init with callback] Will load %d %d %s \n", mChrome, mGlobal, NS_ConvertUTF16toUTF8(mPendingScripts[i]).get());
     LoadFrameScript(mPendingScripts[i], false, mPendingScriptsGlobalStates[i]);
   }
 }

@@ -142,7 +142,11 @@ IndexedDBHelper.prototype = {
               }
             }
           }
-          successCb(txn.result);
+          try {
+            successCb(txn.result);
+          } catch (e) {
+            dump("[debug] Error calling success CB!!!! " + e.toString());
+          }
         }
       };
 
