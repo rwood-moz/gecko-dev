@@ -5,7 +5,7 @@
 "use strict"
 
 /* static functions */
-const DEBUG = false;
+const DEBUG = true;
 function debug(s) {
   dump("-*- SettingsService: " + s + "\n");
 }
