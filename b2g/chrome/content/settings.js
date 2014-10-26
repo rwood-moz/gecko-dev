@@ -599,4 +599,10 @@ for (let key in settingsToObserve) {
   });
 };
 
+var last = Date.now();
+setInterval(function() {
+  dump("@settting.js ALIVE: " + Date.now() - last)
+  last = Date.now();
+}, 500);
+
 dump(' done settings ...\n');
