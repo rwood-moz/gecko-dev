@@ -14,6 +14,12 @@ cd $gecko_dir
 hg pull -r $REVISION $REPOSITORY;
 hg update $REVISION;
 
+### Clone gaia
+if [ ! -d "$gaia_dir" ]; then
+  create_parent_dir $gaia_dir
+  hg clone https://hg.mozilla.org/integration/gaia-central/ $gaia_dir
+fi
+
 ### Pull and update gaia
 cd $gaia_dir
 GAIA_REV=$(get_gaia_revision.js)
