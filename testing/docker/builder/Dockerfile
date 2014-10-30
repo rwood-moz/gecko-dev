@@ -8,6 +8,7 @@ RUN           mkdir -p              /home/worker/bin
 ADD           build.sh              /home/worker/bin/build.sh
 ADD           build-b2g-desktop.sh  /home/worker/bin/build-b2g-desktop.sh
 ADD           get-objdir.py         /home/worker/bin/get-objdir.py
+ADD           build-firefox.sh      /home/worker/bin/build-firefox.sh
 ADD           get_gaia_repo.js      /home/worker/bin/get_gaia_repo.js
 ADD           get_gaia_revision.js  /home/worker/bin/get_gaia_revision.js
 ADD           build-setup.sh        /home/worker/bin/build-setup.sh
