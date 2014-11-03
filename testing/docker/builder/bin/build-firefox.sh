@@ -14,7 +14,7 @@ cd $gecko_dir
 hg pull -r $REVISION $REPOSITORY;
 hg update $REVISION;
 
-### Retrieve latest releng manifest for tooltool
+### Retrieve and install latest tooltool manifest
 tooltool=/home/worker/tools/tooltool.py
 manifest=browser/config/tooltool-manifests/linux64/releng.manifest
 tooltool_url=http://tooltool.pub.build.mozilla.org/temp-sm-stuff
@@ -23,17 +23,19 @@ python $tooltool --url $tooltool_url --overwrite -m $manifest fetch -c $TOOLTOOL
 chmod +x setup.sh
 ./setup.sh
 
+export MOZ_OBJDIR=$(get-objdir.py $gecko_dir)
+
 ./mach build;
 
 ### Make package
-cd /home/worker/object-folder;
+cd $MOZ_OBJDIR;
 make package package-tests;
 
 ### Extract artifacts
 # Navigate to dist/ folder
-cd /home/worker/object-folder/dist;
+cd $MOZ_OBJDIR/dist;
 
-ls -lah /home/worker/object-folder/dist/
+ls -lah $MOZ_OBJDIR/dist/
 
 
 # Target names are cached so make sure we discard them first if found.
