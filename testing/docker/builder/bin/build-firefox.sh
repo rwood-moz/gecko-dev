@@ -9,11 +9,19 @@ test $REPOSITORY  # Should be an hg repository url to pull from
 test $REVISION    # Should be an hg revision to pull down
 test $MOZCONFIG   # Should be a mozconfig file from mozconfig/ folder
 
-
 ### Pull and update mozilla-central
 cd $gecko_dir
 hg pull -r $REVISION $REPOSITORY;
 hg update $REVISION;
+
+### Retrieve latest releng manifest for tooltool
+tooltool=/home/worker/tools/tooltool.py
+manifest=browser/config/tooltool-manifests/linux64/releng.manifest
+tooltool_url=http://tooltool.pub.build.mozilla.org/temp-sm-stuff
+
+python $tooltool --url $tooltool_url --overwrite -m $manifest fetch -c $TOOLTOOL_CACHE
+chmod +x setup.sh
+./setup.sh
 
 ./mach build;
 

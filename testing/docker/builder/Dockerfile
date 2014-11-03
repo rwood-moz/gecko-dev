@@ -5,10 +5,10 @@ ENV PATH $PATH:/home/worker/bin/
 ENV TOOLTOOL_CACHE  /home/worker/tools/tooltool_cache
 
 # Add utilities and configuration
-RUN           mkdir                 /home/worker/bin
-RUN           mkdir                 /home/worker/tools
+ADD           system-setup.sh       /tmp/system-setup.sh
 ADD           bin                   /home/worker/bin
-RUN           chown -R              worker:worker /home/worker/
+RUN           /tmp/system-setup.sh
+RUN           chown -R              worker:worker /home/worker/*
 
 USER worker
 
