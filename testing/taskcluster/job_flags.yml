@@ -56,6 +56,11 @@ builds:
     types:
       opt: tasks/builds/b2g_desktop.yml
       debug: tasks/builds/b2g_desktop_debug.yml
+  linux64-mulet:
+    platforms:
+      - Mulet Linux
+    types:
+      opt: tasks/builds/mulet_linux.yml
 
 # Test section covers the -u options in the try flags
 tests:
@@ -75,5 +80,6 @@ tests:
     allowed_build_tasks:
       - tasks/builds/b2g_desktop.yml
       - tasks/builds/b2g_desktop_debug.yml
+      - tasks/builds/mulet_linux.yml
     task: tasks/tests/b2g_mochitest.yml
     chunks: 5

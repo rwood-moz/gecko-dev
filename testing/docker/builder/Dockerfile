@@ -2,7 +2,7 @@ FROM          quay.io/mozilla/base:0.0.2
 MAINTAINER    Jonas Finnemann Jensen <jopsen@gmail.com>
 
 ENV PATH $PATH:/home/worker/bin/
-ENV TOOLTOOL_CACHE  /home/worker/tools/tooltool_cache
+ENV TOOLTOOL_CACHE  /home/worker/tools/tooltool-cache
 
 # Add utilities and configuration
 ADD           system-setup.sh       /tmp/system-setup.sh
