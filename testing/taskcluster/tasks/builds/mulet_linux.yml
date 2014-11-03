@@ -32,7 +32,7 @@ task:
     maxRunTime: 3600
 
     command:
-      - build-mulet-linux.sh
+      - bin/build-mulet-linux.sh
 
     artifacts:
       'public/build':
