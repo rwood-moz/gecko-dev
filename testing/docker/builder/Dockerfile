@@ -6,12 +6,13 @@ ENV TOOLTOOL_CACHE  /home/worker/tools/tooltool-cache
 
 # Add utilities and configuration
 ADD           system-setup.sh       /tmp/system-setup.sh
-ADD           run-as-worker.sh      /usr/local/bin/run-as-worker.sh
 ADD           bin                   /home/worker/bin
 RUN           /tmp/system-setup.sh
-RUN           chown -R              worker:worker /home/worker/*
+
+# TODO enable worker
+# TODO volume mount permissions will be an issue
+# USER worker
 
 # Set a default command useful for debugging
 CMD ["/bin/bash", "--login"]
 
-ENTRYPOINT ["run-as-worker.sh"]
