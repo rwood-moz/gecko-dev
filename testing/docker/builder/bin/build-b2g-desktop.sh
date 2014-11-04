@@ -14,6 +14,15 @@ cd $gecko_dir
 hg pull -r $REVISION $REPOSITORY;
 hg update $REVISION;
 
+### Retrieve and install latest tooltool manifest
+tooltool=/home/worker/tools/tooltool.py
+manifest=b2g/config/tooltool-manifests/linux64/releng.manifest
+tooltool_url=http://tooltool.pub.build.mozilla.org/temp-sm-stuff
+
+python $tooltool --url $tooltool_url --overwrite -m $manifest fetch -c $TOOLTOOL_CACHE
+chmod +x setup.sh
+./setup.sh
+
 ### Clone gaia
 if [ ! -d "$gaia_dir" ]; then
   create_parent_dir $gaia_dir
