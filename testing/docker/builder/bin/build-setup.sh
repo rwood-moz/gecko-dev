@@ -11,10 +11,13 @@ create_parent_dir() {
 }
 
 ### Firefox Build Setup
-# Clone mozilla-central
 if [ ! -d "$gecko_dir" ]; then
-  create_parent_dir $gecko_dir
-  hg clone https://hg.mozilla.org/mozilla-central/ $gecko_dir
+  mkdir -p "$gecko_dir"
+  # If repo exists on cache grab it from there, much faster, otherwise clone
+  if ! tc-repo-cache.sh /home/worker/bin/repo-cache.json https://hg.mozilla.org/mozilla-central "$gecko_dir" ; then
+    create_parent_dir $gecko_dir
+    hg clone https://hg.mozilla.org/mozilla-central/ $gecko_dir
+  fi
 fi
 
 # Create .mozbuild so mach doesn't complain about this

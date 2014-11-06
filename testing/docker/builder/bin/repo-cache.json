@@ -1,0 +1,5 @@
+{
+  "https://hg.mozilla.org/mozilla-central": "https://s3-us-west-2.amazonaws.com/test-caching/mozilla-central.tar.gz",
+  "https://hg.mozilla.org/integration/gaia-central": "https://s3-us-west-2.amazonaws.com/test-caching/gaia.tar.gz"
+}
+

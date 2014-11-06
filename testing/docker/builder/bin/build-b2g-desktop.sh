@@ -25,8 +25,12 @@ chmod +x setup.sh
 
 ### Clone gaia
 if [ ! -d "$gaia_dir" ]; then
-  create_parent_dir $gaia_dir
-  hg clone https://hg.mozilla.org/integration/gaia-central/ $gaia_dir
+  mkdir -p "$gaia_dir"
+  # If repo exists on cache grab it from there, much faster, otherwise clone
+  if ! tc-repo-cache.sh /home/worker/bin/repo-cache.json https://hg.mozilla.org/integration/gaia-central "$gaia_dir" ; then
+    create_parent_dir $gaia_dir
+    hg clone https://hg.mozilla.org/integration/gaia-central/ $gaia_dir
+  fi
 fi
 
 ### Pull and update gaia

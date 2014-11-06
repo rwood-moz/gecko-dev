@@ -3,6 +3,7 @@ MAINTAINER    Jonas Finnemann Jensen <jopsen@gmail.com>
 
 # Run system setup script
 ADD           system-setup.sh   /tmp/system-setup.sh
+ADD           bin               /home/worker/bin
 RUN           ["/tmp/system-setup.sh"]
 
 # Set variable normally configured at login, by the shells parent process, these

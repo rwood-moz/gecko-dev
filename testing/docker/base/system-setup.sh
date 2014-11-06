@@ -115,6 +115,7 @@ yum install -y                      \
   screen                            \
   vim                               \
   nodejs                            \
+  jq                                \
   ;
 
 # Install mozilla specific packages
