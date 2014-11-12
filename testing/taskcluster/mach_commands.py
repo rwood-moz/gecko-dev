@@ -139,7 +139,8 @@ class TryGraph(object):
                 "docker-worker:cache:sources-gaia",
                 "docker-worker:cache:build-b2g-desktop-objects",
                 "docker-worker:cache:build-mulet-linux-objects",
-                "docker-worker:cache:tooltool-cache"
+                "docker-worker:cache:tooltool-cache",
+                "docker-worker:cache:build-emulator-objects"
             ]
 
             # XXX: This is a hack figure out how to do this correctly or sanely
@@ -165,7 +166,7 @@ class TryGraph(object):
             }
 
         for build in job_graph:
-            build_parameters = copy.copy(parameters)
+            build_parameters = dict(parameters, **build['additional-parameters'])
             build_parameters['build_slugid'] = slugid()
             build_task = import_yaml(build['task'], build_parameters)
 
@@ -213,11 +214,15 @@ class CIBuild(object):
         help='revision in gecko to use in sub tasks')
     @CommandArgument('--repository',
         help='full path to hg repository to use in sub tasks')
+    @CommandArgument('--b2g-config',
+        help='(emulators/phones only) in tree build configuration directory')
+    @CommandArgument('--debug', action='store_true',
+        help='(emulators/phones only) build debug images')
     @CommandArgument('--owner',
         help='email address of who owns this graph')
     @CommandArgument('build_task',
         help='path to build task definition')
-    def create_ci_build(self, build_task, revision="", repository="", owner=""):
+    def create_ci_build(self, build_task, revision="", repository="", b2g_config="", debug=False, owner=""):
         # TODO handle git repos
         if not repository:
             repository = get_hg_url()
@@ -225,10 +230,15 @@ class CIBuild(object):
         if not revision:
             revision = get_latest_hg_revision(repository)
 
+        debug = 1 if debug else 0
+
         build_parameters = {
             'docker_image': docker_image,
             'repository': repository,
             'revision': revision,
+            'b2g-config': b2g_config,
+            'debug': debug,
+            'build-type': 'Debug' if debug else 'Opt',
             'owner': owner,
             'from_now': json_time_from_now,
             'now': current_json_time()
